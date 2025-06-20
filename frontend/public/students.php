@@ -115,6 +115,41 @@ if ($result === false) {
             --error-message-border: var(--error-message-border-dark);
         }
 
+        /* Keyframes for animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Initial state for elements that will animate */
+        .header, .container, .action-bar, table, .footer {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Apply animations with staggered delays */
+        .header {
+            animation: fadeInUp 0.8s ease-out forwards 0.2s;
+        }
+        .container { /* Animates the main content box */
+            animation: fadeInUp 0.8s ease-out forwards 0.4s;
+        }
+        .action-bar { /* Animates within the container */
+            animation: fadeInUp 0.7s ease-out forwards 0.6s;
+        }
+        table { /* Animates within the container */
+            animation: fadeInUp 0.7s ease-out forwards 0.8s;
+        }
+        .footer {
+            animation: fadeInUp 0.8s ease-out forwards 1.0s;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
             background-color: var(--bg-color, var(--bg-color-light));
