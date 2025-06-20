@@ -2,36 +2,34 @@
 session_start(); // Good practice
 require_once __DIR__ . '/../../backend/config/connection.php'; // Path to DB connection
 
-// Fetch students from the database
-$students = [];
+// --- Fetch notifications from the database ---
+// NOTE: In a real application, you would filter this by the logged-in user's ID.
+// For now, we fetch all to demonstrate the table structure.
+$notifications = [];
 $sql = "SELECT
-            s.id,
-            s.first_name,
-            s.last_name,
-            u.username,
-            sec.name AS section_name,
-            s.date_of_birth,
-            s.gender,
-            s.phone,
-            s.registered_at
+            n.id,
+            n.type,
+            n.message,
+            n.link,
+            n.is_read,
+            n.created_at,
+            u.username AS user_username -- Username of the user receiving the notification
         FROM
-            students s
+            notifications n
         LEFT JOIN
-            users u ON s.user_id = u.id
-        LEFT JOIN
-            sections sec ON s.section_id = sec.id
+            users u ON n.user_id = u.id
         ORDER BY
-            s.id ASC";
+            n.created_at DESC, n.id DESC"; // Order by newest first
 
 $result = $conn->query($sql);
 $error_message = '';
 
 if ($result === false) {
     // Query failed
-    $error_message = "Error fetching student data: " . htmlspecialchars($conn->error);
+    $error_message = "Error fetching notification data: " . htmlspecialchars($conn->error);
 } elseif ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $students[] = $row;
+        $notifications[] = $row;
     }
 }
 // $conn will be closed by connection.php or can be closed manually if needed.
@@ -41,7 +39,7 @@ if ($result === false) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management - International School Portal</title>
+    <title>Notifications - International School Portal</title>
     <style>
         :root {
             /* Light Mode - Classic International School Palette */
@@ -53,7 +51,7 @@ if ($result === false) {
             --header-text-light: #ffffff;
             --footer-bg-light: #002b5c;
             --footer-text-light: #e0e0e0;
-            --card-bg-light: #00509e; 
+            --card-bg-light: #00509e;
             --card-text-light: #ffffff;
             --card-hover-bg-light: #003366;
             --border-color-light: #dee2e6;
@@ -66,29 +64,10 @@ if ($result === false) {
             --error-message-bg-light: #f8d7da;
             --error-message-color-light: #721c24;
             --error-message-border-light: #f5c6cb;
-
-            /* Dark Mode - Classic International School Palette */
-            --bg-color-dark: #1a1a1a;
-            --text-color-dark: #e0e0e0;
-            --primary-color-dark: #5c9ded;
-            --secondary-color-dark: #2c2c2c;
-            --header-bg-dark: #0d1b2a;
-            --header-text-dark: #ffffff;
-            --footer-bg-dark: #0d1b2a;
-            --footer-text-dark: #cccccc;
-            --card-bg-dark: #004080;
-            --card-text-dark: #ffffff;
-            --card-hover-bg-dark: #00509e;
-            --border-color-dark: #444444;
-            --link-color-dark: #5c9ded;
-            --button-bg-dark: #004080;
-            --button-text-dark: #ffffff;
-            --button-hover-bg-dark: #00509e;
-            --table-header-bg-dark: #343a40;
-            --table-row-hover-bg-dark: #3E444A;
-            --error-message-bg-dark: #522626;
-            --error-message-color-dark: #f8d7da;
-            --error-message-border-dark: #721c24;
+            --status-read-bg-light: #e9ecef; /* Light gray */
+            --status-read-color-light: #6c757d; /* Muted text */
+            --status-unread-bg-light: #fff3cd; /* Light yellow */
+            --status-unread-color-light: #856404; /* Dark yellow text */
         }
 
         [data-theme="dark"] {
@@ -113,6 +92,10 @@ if ($result === false) {
             --error-message-bg: var(--error-message-bg-dark);
             --error-message-color: var(--error-message-color-dark);
             --error-message-border: var(--error-message-border-dark);
+            --status-read-bg-dark: #343a40; /* Dark gray */
+            --status-read-color-dark: #ced4da; /* Light gray text */
+            --status-unread-bg-dark: #664d03; /* Darker yellow */
+            --status-unread-color-dark: #fff3cd; /* Light yellow text */
         }
 
         /* Keyframes for animations */
@@ -159,23 +142,17 @@ if ($result === false) {
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
             padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
-            display: flex; justify-content: space-between; align-items: center; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .header h1 { margin: 0; font-size: 2em; }
-        .header-links {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* Space between links and toggle */
-        }
-        .header-links a { color: var(--header-text, var(--header-text-light)); text-decoration: none; font-size: 1em; transition: opacity 0.3s ease; }
-        .header-links a:hover { opacity: 0.8; }
+        .header a { color: var(--header-text, var(--header-text-light)); text-decoration: none; margin-left:15px; }
         #theme-toggle {
             background-color: var(--primary-color, var(--primary-color-light)); color: var(--header-text, var(--header-text-light));
             border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;
         }
         #theme-toggle:hover { opacity: 0.9; }
         .container {
-            width: 90%; max-width: 1400px; margin: 30px auto; padding: 20px; /* Increased max-width for more columns */
+            width: 90%; max-width: 1200px; margin: 30px auto; padding: 20px;
             background-color: var(--secondary-color, var(--secondary-color-light));
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px;
         }
@@ -194,7 +171,7 @@ if ($result === false) {
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td {
             border: 1px solid var(--border-color, var(--border-color-light));
-            padding: 10px; text-align: left; font-size: 0.9em; /* Slightly smaller font for more data */
+            padding: 10px; text-align: left; font-size: 0.9em;
         }
         th { background-color: var(--table-header-bg, var(--table-header-bg-light)); font-weight: 600; }
         tbody tr:hover { background-color: var(--table-row-hover-bg, var(--table-row-hover-bg-light)); }
@@ -204,6 +181,16 @@ if ($result === false) {
             background-color: var(--error-message-bg, var(--error-message-bg-light));
             color: var(--error-message-color, var(--error-message-color-light));
             border-color: var(--error-message-border, var(--error-message-border-light));
+        }
+        .status-read {
+            background-color: var(--status-read-bg, var(--status-read-bg-light));
+            color: var(--status-read-color, var(--status-read-color-light));
+            padding: 3px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold;
+        }
+        .status-unread {
+            background-color: var(--status-unread-bg, var(--status-unread-bg-light));
+            color: var(--status-unread-color, var(--status-unread-color-light));
+            padding: 3px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold;
         }
         .footer {
             text-align: center; padding: 20px; margin-top: 40px;
@@ -216,19 +203,17 @@ if ($result === false) {
 <body>
     <header class="header">
         <div>
-            <div class="header-links">
-                <a href="../index.php">Home</a> <!-- Link to frontend index -->
-                <a href="notifications.php">Notifications</a>
-            </div>
+            <a href="../index.php">Home</a> <!-- Link to frontend index -->
         </div>
-        <h1>Student Management</h1>
+        <h1>Notifications</h1>
         <button id="theme-toggle">Toggle Theme</button>
     </header>
 
     <div class="container">
-        <div class="action-bar">
-            <a href="add_student.php" class="btn">Add New Student</a>
-        </div>
+        <!-- Action bar could be added here later for "Mark All Read" -->
+        <!-- <div class="action-bar">
+            <button class="btn">Mark All as Read</button>
+        </div> -->
 
         <?php if (!empty($error_message)): ?>
             <div class="error-message"><?php echo $error_message; ?></div>
@@ -238,37 +223,51 @@ if ($result === false) {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Username</th>
-                    <th>Section</th>
-                    <th>D.O.B</th>
-                    <th>Gender</th>
-                    <th>Phone</th>
-                    <th>Registered</th>
+                    <th>Recipient (User)</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Created At</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($students)): ?>
-                    <?php foreach ($students as $student): ?>
+                <?php if (!empty($notifications)): ?>
+                    <?php foreach ($notifications as $notification): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($student['id']); ?></td>
-                            <td><?php echo htmlspecialchars($student['first_name'] . ' ' . $student['last_name']); ?></td>
-                            <td><?php echo htmlspecialchars($student['username'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars($student['section_name'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($student['date_of_birth']))); ?></td>
-                            <td><?php echo htmlspecialchars(ucfirst($student['gender'])); ?></td>
-                            <td><?php echo htmlspecialchars($student['phone']); ?></td>
-                            <td><?php echo htmlspecialchars(date('Y-m-d H:i', strtotime($student['registered_at']))); ?></td>
+                            <td><?php echo htmlspecialchars($notification['id']); ?></td>
+                            <td><?php echo htmlspecialchars($notification['user_username'] ?? 'N/A User'); ?></td>
+                            <td><?php echo htmlspecialchars(ucfirst(str_replace('_', ' ', $notification['type']))); ?></td>
                             <td>
-                                <a href="edit_student.php?id=<?php echo $student['id']; ?>" class="btn btn-sm btn-edit">Edit</a>
-                                <a href="delete_student.php?id=<?php echo $student['id']; ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                                <?php
+                                    $message = htmlspecialchars($notification['message']);
+                                    $link = htmlspecialchars($notification['link']);
+                                    if (!empty($link)) {
+                                        echo "<a href='{$link}'>{$message}</a>";
+                                    } else {
+                                        echo $message;
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                    $status_class = $notification['is_read'] ? 'status-read' : 'status-unread';
+                                    $status_text = $notification['is_read'] ? 'Read' : 'Unread';
+                                ?>
+                                <span class="<?php echo $status_class; ?>"><?php echo $status_text; ?></span>
+                            </td>
+                            <td><?php echo htmlspecialchars(date('Y-m-d H:i', strtotime($notification['created_at']))); ?></td>
+                            <td>
+                                <!-- Actions like "Mark Read/Unread", "Delete" -->
+                                <!-- <a href="mark_notification.php?id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-edit">Mark Read</a> -->
+                                <!-- <a href="delete_notification.php?id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure?');">Delete</a> -->
+                                N/A
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php elseif (empty($error_message)): ?>
                     <tr>
-                        <td colspan="9" class="no-data">No students found.</td>
+                        <td colspan="7" class="no-data">No notifications found.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -277,7 +276,7 @@ if ($result === false) {
 
     <footer class="footer">
         <p>&copy; <?php echo date("Y"); ?> International School. All rights reserved.</p>
-        <p class="dev-link"><a href="../../setup_tables.php">Initialize Database (Dev Only)</a></p> <!-- Corrected path -->
+        <p class="dev-link"><a href="../../setup_tables.php">Initialize Database (Dev Only)</a></p>
     </footer>
 
     <script>

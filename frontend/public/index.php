@@ -68,15 +68,28 @@
             padding: 25px 0;
             text-align: center;
             border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 20px;
-            padding-right: 20px;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space out items */
+            align-items: center; /* Vertically align items */
+            padding: 20px; /* Add padding */
         }
         .header h1 {
             margin: 0;
             font-size: 2.5em;
+        }
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Space between links and toggle */
+        }
+        .header-links a {
+            color: var(--header-text, var(--header-text-light));
+            text-decoration: none;
+            font-size: 1em;
+            transition: opacity 0.3s ease;
+        }
+        .header-links a:hover {
+            opacity: 0.8;
         }
         #theme-toggle {
             background-color: var(--primary-color, var(--primary-color-light));
@@ -153,8 +166,12 @@
 </head>
 <body>
     <header class="header">
-        <h1>International School Portal</h1>
+        <div>
+            <h1>International School Portal</h1>
+        </div>
+        <div class="header-links"><a href="notifications.php">Notifications</a>
         <button id="theme-toggle">Toggle Theme</button>
+        </div>
     </header>
 
     <div class="container">
