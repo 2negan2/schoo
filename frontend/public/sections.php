@@ -116,10 +116,22 @@ if ($result === false) {
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
             padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; /* Adjusted padding */
         }
         .header h1 { margin: 0; font-size: 2em; }
-        .header a { color: var(--header-text, var(--header-text-light)); text-decoration: none; margin-left:15px; }
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between links */
+            flex-wrap: wrap; /* Allow links to wrap */
+            justify-content: center; /* Center links if they wrap */
+        }
+        .header-links a {
+            color: var(--header-text, var(--header-text-light)); text-decoration: none; font-size: 1em;
+            padding: 5px 10px; border-radius: 4px;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+        .header-links a:hover { opacity: 0.8; background-color: rgba(255, 255, 255, 0.1); }
         #theme-toggle {
             background-color: var(--primary-color, var(--primary-color-light)); color: var(--header-text, var(--header-text-light));
             border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;
@@ -167,10 +179,19 @@ if ($result === false) {
 <body>
     <header class="header">
         <div>
-            <a href="../index.php">Home</a> <!-- Link to frontend index -->
+            <h1>Section Management</h1>
         </div>
-        <h1>Section Management</h1>
-        <button id="theme-toggle">Toggle Theme</button>
+        <div class="header-links">
+            <a href="index.php">Home</a>
+            <a href="students.php">Students</a>
+            <a href="teachers.php">Teachers</a>
+            <a href="sections.php">Sections</a>
+            <a href="users.php">Users</a>
+            <a href="attendance.php">Attendance</a>
+            <a href="grades.php">Grades</a>
+            <a href="notifications.php">Notifications</a>
+            <button id="theme-toggle">Toggle Theme</button>
+        </div>
     </header>
 
     <div class="container">

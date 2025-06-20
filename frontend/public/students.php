@@ -1,3 +1,4 @@
+
 <?php
 session_start(); // Good practice
 require_once __DIR__ . '/../../backend/config/connection.php'; // Path to DB connection
@@ -159,16 +160,22 @@ if ($result === false) {
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
             padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
-            display: flex; justify-content: space-between; align-items: center; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; /* Adjusted padding */
         }
         .header h1 { margin: 0; font-size: 2em; }
         .header-links {
             display: flex;
             align-items: center;
-            gap: 20px; /* Space between links and toggle */
+            gap: 15px; /* Space between links */
+            flex-wrap: wrap; /* Allow links to wrap */
+            justify-content: center; /* Center links if they wrap */
         }
-        .header-links a { color: var(--header-text, var(--header-text-light)); text-decoration: none; font-size: 1em; transition: opacity 0.3s ease; }
-        .header-links a:hover { opacity: 0.8; }
+        .header-links a {
+            color: var(--header-text, var(--header-text-light)); text-decoration: none; font-size: 1em;
+            padding: 5px 10px; border-radius: 4px;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+        .header-links a:hover { opacity: 0.8; background-color: rgba(255, 255, 255, 0.1); }
         #theme-toggle {
             background-color: var(--primary-color, var(--primary-color-light)); color: var(--header-text, var(--header-text-light));
             border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;
@@ -216,13 +223,19 @@ if ($result === false) {
 <body>
     <header class="header">
         <div>
-            <div class="header-links">
-                <a href="../index.php">Home</a> <!-- Link to frontend index -->
-                <a href="notifications.php">Notifications</a>
-            </div>
+            <h1>Student Management</h1>
         </div>
-        <h1>Student Management</h1>
-        <button id="theme-toggle">Toggle Theme</button>
+        <div class="header-links">
+                <a href="index.php">Home</a>
+                <a href="students.php">Students</a>
+                <a href="teachers.php">Teachers</a>
+                <a href="sections.php">Sections</a>
+                <a href="users.php">Users</a>
+                <a href="attendance.php">Attendance</a>
+                <a href="grades.php">Grades</a>
+                <a href="notifications.php">Notifications</a>
+                <button id="theme-toggle">Toggle Theme</button>
+        </div>
     </header>
 
     <div class="container">
@@ -261,8 +274,8 @@ if ($result === false) {
                             <td><?php echo htmlspecialchars($student['phone']); ?></td>
                             <td><?php echo htmlspecialchars(date('Y-m-d H:i', strtotime($student['registered_at']))); ?></td>
                             <td>
-                                <a href="edit_student.php?id=<?php echo $student['id']; ?>" class="btn btn-sm btn-edit">Edit</a>
-                                <a href="delete_student.php?id=<?php echo $student['id']; ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                                <a href="edit_student.php?id=<?php echo htmlspecialchars($student['id']); ?>" class="btn btn-sm btn-edit">Edit</a>
+                                <a href="../../backend/actions/delete_student.php?id=<?php echo htmlspecialchars($student['id']); ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this student and all their related records? This action cannot be undone.');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

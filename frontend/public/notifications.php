@@ -141,11 +141,25 @@ if ($result === false) {
         }
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
-            padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
+            padding: 15px 20px; /* Adjusted padding */
+            text-align: left; /* Align title left */
+            border-bottom: 4px solid var(--primary-color, var(--primary-color-light));
             display: flex; justify-content: space-between; align-items: center;
         }
         .header h1 { margin: 0; font-size: 2em; }
-        .header a { color: var(--header-text, var(--header-text-light)); text-decoration: none; margin-left:15px; }
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between links */
+            flex-wrap: wrap; /* Allow links to wrap */
+            justify-content: center; /* Center links if they wrap */
+        }
+        .header-links a {
+            color: var(--header-text, var(--header-text-light)); text-decoration: none; font-size: 1em;
+            padding: 5px 10px; border-radius: 4px;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+        .header-links a:hover { opacity: 0.8; background-color: rgba(255, 255, 255, 0.1); }
         #theme-toggle {
             background-color: var(--primary-color, var(--primary-color-light)); color: var(--header-text, var(--header-text-light));
             border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;
@@ -198,15 +212,28 @@ if ($result === false) {
             color: var(--footer-text, var(--footer-text-light));
         }
         .dev-link a { color: var(--footer-text, var(--footer-text-light)); opacity: 0.8; }
+        .message { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }
+        .error-message { background-color: var(--error-message-bg, var(--error-message-bg-light)); color: var(--error-message-color, var(--error-message-color-light)); border-color: var(--error-message-border, var(--error-message-border-light)); }
+        .success-message { background-color: var(--success-message-bg-light, #d4edda); color: var(--success-message-color-light, #155724); border-color: var(--success-message-border-light, #c3e6cb); }
+        [data-theme="dark"] .success-message { background-color: var(--success-message-bg-dark, #1f4d2b); color: var(--success-message-color-dark, #d4edda); border-color: var(--success-message-border-dark, #2a683b); }
     </style>
 </head>
 <body>
     <header class="header">
         <div>
-            <a href="../index.php">Home</a> <!-- Link to frontend index -->
+            <h1>Notifications</h1>
         </div>
-        <h1>Notifications</h1>
-        <button id="theme-toggle">Toggle Theme</button>
+        <div class="header-links">
+            <a href="index.php">Home</a>
+            <a href="students.php">Students</a>
+            <a href="teachers.php">Teachers</a>
+            <a href="sections.php">Sections</a>
+            <a href="users.php">Users</a>
+            <a href="attendance.php">Attendance</a>
+            <a href="grades.php">Grades</a>
+            <a href="notifications.php">Notifications</a>
+            <button id="theme-toggle">Toggle Theme</button>
+        </div>
     </header>
 
     <div class="container">
@@ -215,8 +242,15 @@ if ($result === false) {
             <button class="btn">Mark All as Read</button>
         </div> -->
 
-        <?php if (!empty($error_message)): ?>
-            <div class="error-message"><?php echo $error_message; ?></div>
+        <?php if (!empty($_GET['error'])): ?>
+            <div class="message error-message"><?php echo htmlspecialchars(urldecode($_GET['error'])); ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error_message) && empty($_GET['error'])): /* For initial load errors */ ?>
+            <div class="message error-message"><?php echo htmlspecialchars($error_message); ?></div>
+        <?php endif; ?>
+
+        <?php if (!empty($_GET['success'])): ?>
+            <div class="message success-message"><?php echo htmlspecialchars(urldecode($_GET['success'])); ?></div>
         <?php endif; ?>
 
         <table>
@@ -259,9 +293,12 @@ if ($result === false) {
                             <td><?php echo htmlspecialchars(date('Y-m-d H:i', strtotime($notification['created_at']))); ?></td>
                             <td>
                                 <!-- Actions like "Mark Read/Unread", "Delete" -->
-                                <!-- <a href="mark_notification.php?id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-edit">Mark Read</a> -->
-                                <!-- <a href="delete_notification.php?id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure?');">Delete</a> -->
-                                N/A
+                                <?php if ($notification['is_read']): ?>
+                                    <a href="../../backend/actions/mark_notification.php?id=<?php echo $notification['id']; ?>&status=unread" class="btn btn-sm">Mark Unread</a>
+                                <?php else: ?>
+                                    <a href="../../backend/actions/mark_notification.php?id=<?php echo $notification['id']; ?>&status=read" class="btn btn-sm btn-edit">Mark Read</a>
+                                <?php endif; ?>
+                                <a href="../../backend/actions/delete_notification.php?id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this notification?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
