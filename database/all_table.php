@@ -26,9 +26,10 @@ CREATE TABLE IF NOT EXISTS students (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     date_of_birth DATE NOT NULL,
-    gender ENUM('male','female','other') NOT NULL,
+    gender ENUM('male','female'),
     nationality VARCHAR(50) NOT NULL,
     religion VARCHAR(50),
     city VARCHAR(50) NOT NULL,
@@ -40,8 +41,8 @@ CREATE TABLE IF NOT EXISTS students (
     guardian2_name VARCHAR(100),
     guardian2_relation VARCHAR(50),
     guardian2_phone VARCHAR(20),
-    section_id INT NOT NULL,
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id)
 )");
 
 // TEACHERS

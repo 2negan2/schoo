@@ -240,7 +240,8 @@ if ($result === false) {
 
     <div class="container">
         <div class="action-bar">
-            <a href="add_student.php" class="btn">Add New Student</a>
+            <a href="add_student.php" class="btn">Add Student (Old Form)</a>
+            <a href="create_student.php" class="btn">Create Student (New Form)</a>
         </div>
 
         <?php if (!empty($error_message)): ?>
