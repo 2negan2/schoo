@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Check for session-based messages from redirects
+$session_message = $_SESSION['message'] ?? null;
+if ($session_message) {
+    unset($_SESSION['message']); // Clear the message after retrieving it
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +25,8 @@ session_start();
             --success-message-bg-light: #d4edda; --success-message-color-light: #155724; --success-message-border-light: #c3e6cb;
 
             /* Dark Mode */
+            /* Dark Mode */
+            /* Dark Mode */
             --bg-color-dark: #1a1a1a; --text-color-dark: #e0e0e0; --primary-color-dark: #5c9ded;
             --secondary-color-dark: #2c2c2c; --header-bg-dark: #0d1b2a; --header-text-dark: #ffffff;
             --footer-bg-dark: #0d1b2a; --footer-text-dark: #cccccc; --card-bg-dark: #004080;
@@ -28,6 +35,7 @@ session_start();
             --button-hover-bg-dark: #00509e; --input-bg-dark: #2c2c2c; --input-border-dark: #555;
             --error-message-bg-dark: #522626; --error-message-color-dark: #f8d7da; --error-message-border-dark: #721c24;
             --success-message-bg-dark: #1f4d2b; --success-message-color-dark: #d4edda; --success-message-border-dark: #2a683b;
+
         }
         [data-theme="dark"] {
             --bg-color: var(--bg-color-dark); --text-color: var(--text-color-dark);
@@ -89,11 +97,10 @@ session_start();
     </header>
 
     <div class="container">
-        <?php if (isset($_SESSION['flash_message'])): ?>
-            <div class="message <?php echo $_SESSION['flash_message']['type'] === 'error' ? 'error-message' : 'success-message'; ?>">
-                <?php 
-                    echo htmlspecialchars($_SESSION['flash_message']['message']); 
-                    unset($_SESSION['flash_message']);
+        <?php if ($session_message): ?>
+            <div class="message <?php echo $session_message['type'] === 'error' ? 'error-message' : 'success-message'; ?>">
+                <?php
+                    echo htmlspecialchars($session_message['text']);
                 ?>
             </div>
         <?php endif; ?>
@@ -114,8 +121,8 @@ session_start();
                 <select id="stream" name="stream">
                     <option value="">Select Stream (if applicable)</option>
                     <option value="general">General</option>
-                    <option value="science">Science</option>
-                    <option value="arts">Arts</option>
+                    <option value="natural">Natural</option>
+                    <option value="social">Social</option>
                 </select>
             </div>
 

@@ -379,17 +379,24 @@ if ($session_message) {
             </div>
 
             <div class="form-group">
-                <label for="section_id">Section:</label>
-                <select id="section_id" name="section_id" required>
-                    <option value="">Select Section</option>
-                    <?php foreach ($sections as $section): ?>
-                        <option value="<?php echo $section['id']; ?>">
-                            <?php echo htmlspecialchars($section['name'] . " (Grade " . $section['grade'] . ")"); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <label for="grade">Current Grade:</label>
+                <input type="number" id="grade" name="grade" min="1" max="12" placeholder="e.g., 9" required>
             </div>
 
+            <div class="form-group">
+                <label for="last_school">Last School Attended:</label>
+                <input type="text" id="last_school" name="last_school" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last_score">Last Score:</label>
+                <input type="number" step="0.01" id="last_score" name="last_score" placeholder="e.g., 85.5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last_grade">Last Grade Completed (8-11):</label>
+                <input type="number" id="last_grade" name="last_grade" min="8" max="11" required>
+            </div>
 
             <button type="submit" class="btn">Create Student</button>
             <a href="students.php" class="btn btn-secondary">Cancel</a>

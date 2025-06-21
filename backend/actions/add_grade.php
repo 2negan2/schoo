@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $student_id = filter_input(INPUT_POST, 'student_id', FILTER_VALIDATE_INT);
     $subject_id = filter_input(INPUT_POST, 'subject_id', FILTER_VALIDATE_INT);
     
-    // Use FILTER_NULL_ON_FAILURE for optional numeric fields to get null if invalid/empty
+    // Use FILTER_VALIDATE_FLOAT with FILTER_NULL_ON_FAILURE for optional numeric fields to get null if invalid/empty
     $test = filter_input(INPUT_POST, 'test', FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
     $assignment = filter_input(INPUT_POST, 'assignment', FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
     $activity = filter_input(INPUT_POST, 'activity', FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);

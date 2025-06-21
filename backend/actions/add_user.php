@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
     // 5. Prepare SQL statement
-    $sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("sss", $username, $password_hash, $role);
 

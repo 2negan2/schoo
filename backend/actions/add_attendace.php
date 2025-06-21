@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 1. Sanitize and retrieve form data
     $student_id = filter_input(INPUT_POST, 'student_id', FILTER_VALIDATE_INT);
     $subject_id = filter_input(INPUT_POST, 'subject_id', FILTER_VALIDATE_INT);
-    $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+    $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_STRING);
 
     // Get the user who is marking the attendance (assuming user_id in session)
     $marked_by = $_SESSION['user_id'] ?? null;

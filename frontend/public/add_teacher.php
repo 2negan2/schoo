@@ -78,6 +78,16 @@ session_start();
         .header, .container, .footer { opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
         .container { animation-delay: 0.2s; }
         .footer { animation-delay: 0.4s; }
+        .form-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .form-actions {
+            grid-column: 1 / -1; /* Span across all columns */
+            text-align: right;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +118,7 @@ session_start();
             </div>
         <?php endif; ?>
 
-        <form action="../../backend/actions/add_teacher.php" method="POST">
+        <form action="../../backend/actions/add_teacher.php" method="POST" class="form-grid-container">
             <div class="form-group">
                 <label for="full_name">Full Name:</label>
                 <input type="text" id="full_name" name="full_name" required>
@@ -122,15 +132,25 @@ session_start();
             <div class="form-group">
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                    <option value="other">Other</option>
                 </select>
             </div>
 
             <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" id="nationality" name="nationality" required>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+
+            <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone">
+                <input type="tel" id="phone" name="phone" required>
             </div>
 
             <div class="form-group">
@@ -139,17 +159,19 @@ session_start();
             </div>
 
             <div class="form-group">
-                <label for="qualification">Qualification:</label>
+                <label for="qualification">Qualification (Optional):</label>
                 <input type="text" id="qualification" name="qualification" placeholder="e.g., M.Sc. in Physics">
             </div>
-            
+
             <div class="form-group">
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" rows="3"></textarea>
+                <label for="religion">Religion (Optional):</label>
+                <input type="text" id="religion" name="religion">
             </div>
 
-            <button type="submit" class="btn">Add Teacher</button>
-            <a href="teachers.php" class="btn btn-secondary">Cancel</a>
+            <div class="form-actions">
+                <button type="submit" class="btn">Add Teacher</button>
+                <a href="teachers.php" class="btn btn-secondary">Cancel</a>
+            </div>
         </form>
     </div>
 

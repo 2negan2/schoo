@@ -53,6 +53,8 @@ if ($teacher === null && empty($error_message)) {
             --success-message-bg-light: #d4edda; --success-message-color-light: #155724; --success-message-border-light: #c3e6cb;
 
             /* Dark Mode */
+            /* Dark Mode */
+            /* Dark Mode */
             --bg-color-dark: #1a1a1a; --text-color-dark: #e0e0e0; --primary-color-dark: #5c9ded;
             --secondary-color-dark: #2c2c2c; --header-bg-dark: #0d1b2a; --header-text-dark: #ffffff;
             --footer-bg-dark: #0d1b2a; --footer-text-dark: #cccccc; --card-bg-dark: #004080;
@@ -61,6 +63,8 @@ if ($teacher === null && empty($error_message)) {
             --button-hover-bg-dark: #00509e; --input-bg-dark: #2c2c2c; --input-border-dark: #555;
             --error-message-bg-dark: #522626; --error-message-color-dark: #f8d7da; --error-message-border-dark: #721c24;
             --success-message-bg-dark: #1f4d2b; --success-message-color-dark: #d4edda; --success-message-border-dark: #2a683b;
+
+            /* Dark Mode */
         }
         [data-theme="dark"] {
             --bg-color: var(--bg-color-dark); --text-color: var(--text-color-dark);
@@ -78,10 +82,27 @@ if ($teacher === null && empty($error_message)) {
             --success-message-border: var(--success-message-border-dark);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: var(--bg-color, var(--bg-color-light));
             color: var(--text-color, var(--text-color-light));
-            line-height: 1.6; transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* New: Animated Background */
+            background: linear-gradient(135deg, #e0f2f7, #cce7f0, #b3dce6, #99d1dc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #2c3e50, #34495e, #2c3e50, #1a242f);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
@@ -209,13 +230,22 @@ if ($teacher === null && empty($error_message)) {
                 <select id="gender" name="gender" required>
                     <option value="male" <?php echo ($teacher['gender'] === 'male') ? 'selected' : ''; ?>>Male</option>
                     <option value="female" <?php echo ($teacher['gender'] === 'female') ? 'selected' : ''; ?>>Female</option>
-                    <option value="other" <?php echo ($teacher['gender'] === 'other') ? 'selected' : ''; ?>>Other</option>
                 </select>
             </div>
 
             <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" id="nationality" name="nationality" value="<?php echo htmlspecialchars($teacher['nationality']); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="<?php echo htmlspecialchars($teacher['city']); ?>" required>
+            </div>
+
+            <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($teacher['phone']); ?>">
+                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($teacher['phone']); ?>" required>
             </div>
 
             <div class="form-group">
@@ -224,13 +254,13 @@ if ($teacher === null && empty($error_message)) {
             </div>
 
             <div class="form-group">
-                <label for="qualification">Qualification:</label>
-                <input type="text" id="qualification" name="qualification" value="<?php echo htmlspecialchars($teacher['qualification']); ?>">
+                <label for="qualification">Qualification (Optional):</label>
+                <input type="text" id="qualification" name="qualification" value="<?php echo htmlspecialchars($teacher['qualification'] ?? ''); ?>">
             </div>
-            
+
             <div class="form-group">
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" rows="3"><?php echo htmlspecialchars($teacher['address'] ?? ''); ?></textarea>
+                <label for="religion">Religion (Optional):</label>
+                <input type="text" id="religion" name="religion" value="<?php echo htmlspecialchars($teacher['religion'] ?? ''); ?>">
             </div>
 
             <button type="submit" class="btn">Update Teacher</button>

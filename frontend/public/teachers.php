@@ -2,6 +2,12 @@
 session_start(); // Good practice
 require_once __DIR__ . '/../../backend/config/connection.php'; // Path to DB connection
 
+// Check for session-based messages from redirects
+$session_message = $_SESSION['message'] ?? null;
+if ($session_message) {
+    unset($_SESSION['message']); // Clear the message after retrieving it
+}
+
 // Fetch teachers from the database
 $teachers = [];
 $sql = "SELECT
@@ -10,6 +16,8 @@ $sql = "SELECT
             u.username,
             t.date_of_birth,
             t.gender,
+            t.nationality,
+            t.city,
             t.phone,
             t.email,
             t.qualification
@@ -173,6 +181,11 @@ if ($result === false) {
             color: var(--error-message-color, var(--error-message-color-light));
             border-color: var(--error-message-border, var(--error-message-border-light));
         }
+        .success-message {
+            padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;
+            background-color: var(--success-message-bg-light, #d4edda); color: var(--success-message-color-light, #155724); border-color: var(--success-message-border-light, #c3e6cb);
+            white-space: pre-wrap; /* Allows line breaks in the message */
+        }
         .footer {
             text-align: center; padding: 20px; margin-top: 40px;
             background-color: var(--footer-bg, var(--footer-bg-light));
@@ -204,6 +217,12 @@ if ($result === false) {
             <a href="add_teacher.php" class="btn">Add New Teacher</a>
         </div>
 
+        <?php if ($session_message): ?>
+            <div class="message <?php echo $session_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
+                <?php echo nl2br(htmlspecialchars($session_message['text'])); // Use nl2br to respect line breaks ?>
+            </div>
+        <?php endif; ?>
+
         <?php if (!empty($error_message)): ?>
             <div class="error-message"><?php echo $error_message; ?></div>
         <?php endif; ?>
@@ -216,6 +235,8 @@ if ($result === false) {
                     <th>Username</th>
                     <th>D.O.B</th>
                     <th>Gender</th>
+                    <th>Nationality</th>
+                    <th>City</th>
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Qualification</th>
@@ -231,6 +252,8 @@ if ($result === false) {
                             <td><?php echo htmlspecialchars($teacher['username'] ?? 'N/A'); ?></td>
                             <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($teacher['date_of_birth']))); ?></td>
                             <td><?php echo htmlspecialchars(ucfirst($teacher['gender'])); ?></td>
+                            <td><?php echo htmlspecialchars($teacher['nationality']); ?></td>
+                            <td><?php echo htmlspecialchars($teacher['city']); ?></td>
                             <td><?php echo htmlspecialchars($teacher['phone']); ?></td>
                             <td><?php echo htmlspecialchars($teacher['email'] ?? 'N/A'); ?></td>
                             <td><?php echo htmlspecialchars($teacher['qualification'] ?? 'N/A'); ?></td>
@@ -242,7 +265,7 @@ if ($result === false) {
                     <?php endforeach; ?>
                 <?php elseif (empty($error_message)): ?>
                     <tr>
-                        <td colspan="9" class="no-data">No teachers found.</td>
+                        <td colspan="11" class="no-data">No teachers found.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

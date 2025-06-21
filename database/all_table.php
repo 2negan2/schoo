@@ -41,8 +41,12 @@ CREATE TABLE IF NOT EXISTS students (
     guardian2_name VARCHAR(100),
     guardian2_relation VARCHAR(50),
     guardian2_phone VARCHAR(20),
+    grade INT NOT NULL,
+    last_school VARCHAR(100) NOT NULL,
+    last_score FLOAT NOT NULL,
+    last_grade INT NOT NULL,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 )");
 
 // TEACHERS
@@ -52,7 +56,10 @@ CREATE TABLE IF NOT EXISTS teachers (
     user_id INT NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     date_of_birth DATE NOT NULL,
-    gender ENUM('male','female','other') NOT NULL,
+    gender ENUM('male','female'),
+    nationality VARCHAR(50) NOT NULL,
+    religion VARCHAR(50),
+    city VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100),
     qualification VARCHAR(100)

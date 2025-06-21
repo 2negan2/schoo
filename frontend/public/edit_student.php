@@ -4,7 +4,6 @@ require_once __DIR__ . '/../../backend/config/connection.php';
 
 $student_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $student = null;
-$sections = [];
 $error_message = $_GET['error'] ?? '';
 $success_message = $_GET['success'] ?? '';
 
@@ -28,14 +27,6 @@ if ($stmt) {
     $stmt->close();
 } else {
     $error_message = "Error preparing statement: " . $conn->error;
-}
-
-// Fetch sections for dropdown
-$section_result = $conn->query("SELECT id, name, grade FROM sections ORDER BY grade, name");
-if ($section_result) {
-    while ($row = $section_result->fetch_assoc()) {
-        $sections[] = $row;
-    }
 }
 
 if ($student === null && empty($error_message)) {
@@ -63,6 +54,8 @@ if ($student === null && empty($error_message)) {
             --success-message-bg-light: #d4edda; --success-message-color-light: #155724; --success-message-border-light: #c3e6cb;
 
             /* Dark Mode */
+            /* Dark Mode */
+            /* Dark Mode */
             --bg-color-dark: #1a1a1a; --text-color-dark: #e0e0e0; --primary-color-dark: #5c9ded;
             --secondary-color-dark: #2c2c2c; --header-bg-dark: #0d1b2a; --header-text-dark: #ffffff;
             --footer-bg-dark: #0d1b2a; --footer-text-dark: #cccccc; --card-bg-dark: #004080;
@@ -71,6 +64,8 @@ if ($student === null && empty($error_message)) {
             --button-hover-bg-dark: #00509e; --input-bg-dark: #2c2c2c; --input-border-dark: #555;
             --error-message-bg-dark: #522626; --error-message-color-dark: #f8d7da; --error-message-border-dark: #721c24;
             --success-message-bg-dark: #1f4d2b; --success-message-color-dark: #d4edda; --success-message-border-dark: #2a683b;
+
+            /* Dark Mode */
         }
         [data-theme="dark"] {
             --bg-color: var(--bg-color-dark); --text-color: var(--text-color-dark);
@@ -88,10 +83,27 @@ if ($student === null && empty($error_message)) {
             --success-message-border: var(--success-message-border-dark);
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: var(--bg-color, var(--bg-color-light));
             color: var(--text-color, var(--text-color-light));
-            line-height: 1.6; transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* New: Animated Background */
+            background: linear-gradient(135deg, #e0f2f7, #cce7f0, #b3dce6, #99d1dc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #2c3e50, #34495e, #2c3e50, #1a242f);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .header {
             background-color: var(--header-bg, var(--header-bg-light)); color: var(--header-text, var(--header-text-light));
@@ -202,12 +214,17 @@ if ($student === null && empty($error_message)) {
             <div class="form-group">
                 <label>Username (Linked Account):</label>
                 <input type="text" value="<?php echo htmlspecialchars($student['username'] ?? 'N/A'); ?>" readonly disabled>
-                <small>User account linking is managed separately.</small>
+                <small>User account is linked via user_id and cannot be changed here.</small>
             </div>
 
             <div class="form-group">
                 <label for="first_name">First Name:</label>
                 <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($student['first_name']); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="middle_name">Middle Name:</label>
+                <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($student['middle_name']); ?>" required>
             </div>
 
             <div class="form-group">
@@ -225,45 +242,85 @@ if ($student === null && empty($error_message)) {
                 <select id="gender" name="gender" required>
                     <option value="male" <?php echo ($student['gender'] === 'male') ? 'selected' : ''; ?>>Male</option>
                     <option value="female" <?php echo ($student['gender'] === 'female') ? 'selected' : ''; ?>>Female</option>
-                    <option value="other" <?php echo ($student['gender'] === 'other') ? 'selected' : ''; ?>>Other</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" id="nationality" name="nationality" value="<?php echo htmlspecialchars($student['nationality']); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="religion">Religion (Optional):</label>
+                <input type="text" id="religion" name="religion" value="<?php echo htmlspecialchars($student['religion'] ?? ''); ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="<?php echo htmlspecialchars($student['city']); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($student['phone']); ?>">
+                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($student['phone']); ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" rows="3"><?php echo htmlspecialchars($student['address'] ?? ''); ?></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="section_id">Section:</label>
-                <select id="section_id" name="section_id">
-                    <option value="">Select Section</option>
-                    <?php foreach ($sections as $section): ?>
-                        <option value="<?php echo $section['id']; ?>" <?php echo ($student['section_id'] == $section['id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($section['name'] . " (Grade " . $section['grade'] . ")"); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <label for="emergency_contact">Emergency Contact Phone:</label>
+                <input type="tel" id="emergency_contact" name="emergency_contact" value="<?php echo htmlspecialchars($student['emergency_contact']); ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="score">Admission Score (if applicable):</label>
-                <input type="number" step="0.01" id="score" name="score" value="<?php echo htmlspecialchars($student['score'] ?? ''); ?>">
+                <label for="guardian1_name">Guardian 1 Name:</label>
+                <input type="text" id="guardian1_name" name="guardian1_name" value="<?php echo htmlspecialchars($student['guardian1_name']); ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="last_grade">Last Grade Completed:</label>
-                <input type="text" id="last_grade" name="last_grade" value="<?php echo htmlspecialchars($student['last_grade'] ?? ''); ?>">
+                <label for="guardian1_relation">Guardian 1 Relation:</label>
+                <input type="text" id="guardian1_relation" name="guardian1_relation" value="<?php echo htmlspecialchars($student['guardian1_relation']); ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="last_school">Last School Attended:</label>
-                <input type="text" id="last_school" name="last_school" value="<?php echo htmlspecialchars($student['last_school'] ?? ''); ?>">
+                <label for="guardian1_phone">Guardian 1 Phone:</label>
+                <input type="tel" id="guardian1_phone" name="guardian1_phone" value="<?php echo htmlspecialchars($student['guardian1_phone']); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="guardian2_name">Guardian 2 Name (Optional):</label>
+                <input type="text" id="guardian2_name" name="guardian2_name" value="<?php echo htmlspecialchars($student['guardian2_name'] ?? ''); ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="guardian2_relation">Guardian 2 Relation (Optional):</label>
+                <input type="text" id="guardian2_relation" name="guardian2_relation" value="<?php echo htmlspecialchars($student['guardian2_relation'] ?? ''); ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="guardian2_phone">Guardian 2 Phone (Optional):</label>
+                <input type="tel" id="guardian2_phone" name="guardian2_phone" value="<?php echo htmlspecialchars($student['guardian2_phone'] ?? ''); ?>">
+            </div>
+
+            <h2>Academic History</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="grade">Current Grade:</label>
+                    <input type="number" id="grade" name="grade" min="1" max="12" placeholder="e.g., 9" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_school">Last School Attended:</label>
+                    <input type="text" id="last_school" name="last_school" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_score">Last Score:</label>
+                    <input type="number" step="0.01" id="last_score" name="last_score" placeholder="e.g., 85.5" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_grade">Last Grade Completed (8-11):</label>
+                    <input type="number" id="last_grade" name="last_grade" min="8" max="11" required>
+                </div>
             </div>
 
             <button type="submit" class="btn">Update Student</button>
