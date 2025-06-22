@@ -34,19 +34,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($guardian2_phone)) $guardian2_phone = null; // Optional
 
     // 2. Validate required inputs
-    if (empty($first_name) || empty($middle_name) || empty($last_name) || empty($date_of_birth) || empty($gender) ||
+    if (empty($first_name) || empty($middle_name) || empty($last_name) || empty($date_of_birth) || empty($gender) || // Added middle_name to validation
         empty($nationality) || empty($city) || empty($phone) || empty($emergency_contact) ||
         empty($guardian1_name) || empty($guardian1_relation) || empty($guardian1_phone) ||
-        $grade === false || $grade === null ||
         empty($last_school) || // last_school is now mandatory
-        $last_score === false || $last_score === null ||
-        $last_grade === false || $last_grade === null
+        $grade === false || $grade === null || // grade is INT, so check for false or null
+        $last_score === false || $last_score === null || // last_score is FLOAT, so check for false or null
+        $last_grade === false || $last_grade === null // last_grade is INT, so check for false or null
     ) {
-        redirect_with_message('../../frontend/public/add_student.php', 'error', 'Required fields are missing or invalid.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_student.php', 'error', 'Required fields are missing or invalid.');
     }
     // Validate gender against ENUM values
     if (!in_array($gender, ['male', 'female'])) {
-        redirect_with_message('../../frontend/public/add_student.php', 'error', 'Invalid gender selected.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_student.php', 'error', 'Invalid gender selected.');
     }
 
     // Start a transaction (similar to create_student.php)
@@ -124,17 +124,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                          . "A user account has also been created.\n"
                          . "Username: " . htmlspecialchars($username) . "\n"
                          . "Default Password: " . htmlspecialchars($default_password);
-        redirect_with_message('../../frontend/public/students.php', 'success', $success_message);
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/students.php', 'success', $success_message);
 
     } catch (Exception $e) {
         $conn->rollback();
         error_log($e->getMessage());
-        redirect_with_message('../../frontend/public/add_student.php', 'error', 'An error occurred. Could not create student: ' . $e->getMessage());
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_student.php', 'error', 'An error occurred. Could not create student: ' . $e->getMessage());
     }
     $conn->close();
 
 } else {
     // Not a POST request, redirect to the form page or student list
-    header("Location: ../../frontend/public/add_student.php"); // This will now be the full form
+    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/add_student.php"); // This will now be the full form
 }
 exit();

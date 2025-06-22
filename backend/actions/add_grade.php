@@ -5,7 +5,7 @@ require_once __DIR__ . '/../helpers.php';
 
 // Authorization Check: Ensure a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    redirect_with_message('../../frontend/public/login.php', 'error', 'You must be logged in to perform this action.');
+    redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php', 'error', 'You must be logged in to perform this action.');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -26,14 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. Validate required inputs
     if ($student_id === false || $student_id === null || $subject_id === false || $subject_id === null) {
-        redirect_with_message('../../frontend/public/add_grade.php', 'error', 'Student and Subject are required fields.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_grade.php', 'error', 'Student and Subject are required fields.');
     }
 
     // Validate scores are within range (0-100) if provided
     $score_fields = ['test', 'assignment', 'activity', 'exercise_book', 'midterm', 'final_exam'];
     foreach ($score_fields as $field) {
         if ($$field !== null && ($$field < 0 || $$field > 100)) {
-            redirect_with_message('../../frontend/public/add_grade.php', 'error', ucfirst($field) . ' score must be between 0 and 100.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_grade.php', 'error', ucfirst($field) . ' score must be between 0 and 100.');
         }
     }
 
@@ -64,19 +64,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 5. Execute the statement
         if ($stmt->execute()) {
-            redirect_with_message('../../frontend/public/grades.php', 'success', 'New grade added successfully.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/grades.php', 'success', 'New grade added successfully.');
         } else {
             error_log("Grade Add Error: " . $stmt->error);
-            redirect_with_message('../../frontend/public/add_grade.php', 'error', 'An error occurred while adding the grade.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_grade.php', 'error', 'An error occurred while adding the grade.');
         }
         $stmt->close();
     } else {
         error_log("SQL Prepare Error: " . $conn->error);
-        redirect_with_message('../../frontend/public/add_grade.php', 'error', 'A database error occurred.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_grade.php', 'error', 'A database error occurred.');
     }
     $conn->close();
 } else {
-    header("Location: ../../frontend/public/add_grade.php");
+    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/add_grade.php");
     exit();
 }
 ?>

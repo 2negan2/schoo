@@ -5,7 +5,7 @@ require_once __DIR__ . '/../helpers.php';
 
 // Authorization Check: Ensure a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    redirect_with_message('../../frontend/public/login.php', 'error', 'You must be logged in to perform this action.');
+    redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php', 'error', 'You must be logged in to perform this action.');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. Validate required inputs
     if (empty($name) || $grade === false || $capacity === false) {
-        redirect_with_message('../../frontend/public/add_section.php', 'error', 'Required fields (Name, Grade, Capacity) are missing or invalid.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_section.php', 'error', 'Required fields (Name, Grade, Capacity) are missing or invalid.');
     }
 
     // 3. Prepare SQL statement
@@ -33,19 +33,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 5. Execute the statement
         if ($stmt->execute()) {
-            redirect_with_message('../../frontend/public/sections.php', 'success', 'New section added successfully.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/sections.php', 'success', 'New section added successfully.');
         } else {
             error_log("Section Add Error: " . $stmt->error);
-            redirect_with_message('../../frontend/public/add_section.php', 'error', 'An error occurred while adding the section.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_section.php', 'error', 'An error occurred while adding the section.');
         }
         $stmt->close();
     } else {
         error_log("SQL Prepare Error: " . $conn->error);
-        redirect_with_message('../../frontend/public/add_section.php', 'error', 'A database error occurred.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_section.php', 'error', 'A database error occurred.');
     }
     $conn->close();
 } else {
-    header("Location: ../../frontend/public/add_section.php");
+    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/add_section.php");
     exit();
 }
 ?>

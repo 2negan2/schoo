@@ -4,8 +4,8 @@ require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/../helpers.php';
 
 // Authorization Check: Ensure a user is logged in
-if (!isset($_SESSION['user_id'])) {
-    redirect_with_message('../../frontend/public/login.php', 'error', 'You must be logged in to perform this action.');
+if (!isset($_SESSION['user_id'])) { // This check should ideally be in a common auth file
+    redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php', 'error', 'You must be logged in to perform this action.');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -13,9 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name = trim(filter_input(INPUT_POST, 'full_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
     $date_of_birth = filter_input(INPUT_POST, 'date_of_birth', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $gender = filter_input(INPUT_POST, 'gender', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $nationality = trim(filter_input(INPUT_POST, 'nationality', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
     $religion = trim(filter_input(INPUT_POST, 'religion', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $city = trim(filter_input(INPUT_POST, 'city', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
     $phone = trim(filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $qualification = trim(filter_input(INPUT_POST, 'qualification', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
@@ -25,14 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($qualification)) $qualification = null;
 
     // 2. Validate required inputs
-    if (empty($full_name) || empty($date_of_birth) || empty($gender) || empty($email) || empty($nationality) || empty($city) || empty($phone)) {
-        redirect_with_message('../../frontend/public/add_teacher.php', 'error', 'Required fields are missing or invalid.');
+    if (empty($full_name) || empty($date_of_birth) || empty($gender) || empty($email) || empty($phone)) {
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php', 'error', 'Required fields are missing or invalid.');
     }
     if ($email === false) {
-        redirect_with_message('../../frontend/public/add_teacher.php', 'error', 'Invalid email format provided.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php', 'error', 'Invalid email format provided.');
     }
     if (!in_array($gender, ['male', 'female'])) {
-        redirect_with_message('../../frontend/public/add_teacher.php', 'error', 'Invalid gender selected.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php', 'error', 'Invalid gender selected.');
     }
 
     // Start a transaction
@@ -79,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_user->close();
 
         // 3. Prepare SQL statement for the 'teachers' table
-        $sql_teacher = "INSERT INTO teachers (user_id, full_name, date_of_birth, gender, nationality, religion, city, phone, email, qualification) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql_teacher = "INSERT INTO teachers (user_id, full_name, date_of_birth, gender, religion, phone, email, qualification) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
         $stmt_teacher = $conn->prepare($sql_teacher);
         if (!$stmt_teacher) {
@@ -88,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // 4. Bind parameters
-        $stmt_teacher->bind_param("isssssssss", $user_id, $full_name, $date_of_birth, $gender, $nationality, $religion, $city, $phone, $email, $qualification);
+        $stmt_teacher->bind_param("isssssss", $user_id, $full_name, $date_of_birth, $gender, $religion, $phone, $email, $qualification);
 
         // 5. Execute the statement
         if (!$stmt_teacher->execute()) {
@@ -104,18 +102,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                          . "A user account has also been created.\n"
                          . "Username: " . htmlspecialchars($username) . "\n"
                          . "Default Password: " . htmlspecialchars($default_password);
-        redirect_with_message('../../frontend/public/teachers.php', 'success', $success_message);
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php', 'success', $success_message);
 
     } catch (Exception $e) {
         $conn->rollback();
         error_log("Teacher Add Error: " . $e->getMessage());
-        redirect_with_message('../../frontend/public/add_teacher.php', 'error', 'An error occurred while adding the teacher: ' . $e->getMessage());
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php', 'error', 'An error occurred while adding the teacher: ' . $e->getMessage());
     }
     $conn->close();
 
 } else {
-    // Not a POST request
-    header("Location: ../../frontend/public/add_teacher.php");
+    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php");
     exit();
 }
-?>

@@ -57,9 +57,7 @@ CREATE TABLE IF NOT EXISTS teachers (
     full_name VARCHAR(100) NOT NULL,
     date_of_birth DATE NOT NULL,
     gender ENUM('male','female'),
-    nationality VARCHAR(50) NOT NULL,
     religion VARCHAR(50),
-    city VARCHAR(50) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100),
     qualification VARCHAR(100)
@@ -80,6 +78,8 @@ createTable("subjects", "
 CREATE TABLE IF NOT EXISTS subjects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    description TEXT,
     grade_level INT NOT NULL,
     stream ENUM('natural','social') DEFAULT NULL
 )");

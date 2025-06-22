@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. Validate inputs
     if (!$student_id) {
-        redirect_with_message('../../frontend/public/students.php', 'error', 'Invalid student ID.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/students.php', 'error', 'Invalid student ID.');
     }
     if (empty($first_name) || empty($middle_name) || empty($last_name) || empty($date_of_birth) || empty($gender) || 
         empty($nationality) || empty($city) || empty($phone) || empty($emergency_contact) || 
@@ -46,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $grade === false || $grade === null || 
         $last_score === false || $last_score === null || 
         $last_grade === false || $last_grade === null) {
-        redirect_with_message('../../frontend/public/edit_student.php?id=' . $student_id, 'error', 'Required fields are missing.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/edit_student.php?id=' . $student_id, 'error', 'Required fields are missing.');
     }
     if (!in_array($gender, ['male', 'female'])) {
-        redirect_with_message('../../frontend/public/edit_student.php?id=' . $student_id, 'error', 'Invalid gender selected.');
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/edit_student.php?id=' . $student_id, 'error', 'Invalid gender selected.');
     }
 
     // 3. Prepare SQL statement
@@ -75,19 +75,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 5. Execute
         if ($stmt->execute()) {
-            redirect_with_message('../../frontend/public/students.php', 'success', 'Student record updated successfully.');
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/students.php', 'success', 'Student record updated successfully.');
         } else {
             error_log("Student Update Error: " . $stmt->error);
-            redirect_with_message('../../frontend/public/edit_student.php?id=' . $student_id, 'error', 'Error updating record: ' . $stmt->error);
+            redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/edit_student.php?id=' . $student_id, 'error', 'Error updating record: ' . $stmt->error);
         }
         $stmt->close();
     } else {
         error_log("SQL Prepare Error: " . $conn->error);
-        redirect_with_message('../../frontend/public/edit_student.php?id=' . $student_id, 'error', 'Error preparing statement: ' . $conn->error);
+        redirect_with_message('/programing/schoo-main/schoo-main/schoo/frontend/public/edit_student.php?id=' . $student_id, 'error', 'Error preparing statement: ' . $conn->error);
     }
     $conn->close();
 } else {
-    header("Location: ../../frontend/public/students.php"); // Redirect if not POST
+    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/students.php"); // Redirect if not POST
 }
 exit();
 ?>
