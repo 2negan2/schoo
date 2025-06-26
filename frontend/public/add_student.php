@@ -1,11 +1,12 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../backend/config/connection.php';
+// Use the new bootstrap file for common includes
+require_once __DIR__ . '/../../src/bootstrap.php';
+// Authorization Check: Ensure a user is logged in AND is an admin
+check_auth_and_role('admin');
 
-$session_message = $_SESSION['message'] ?? null;
-if ($session_message) { unset($_SESSION['message']); }
-
-
+// This is a simple form page, so no separate logic file is needed.
+$flash_message = $_SESSION['flash_message'] ?? null;
+if ($flash_message) { unset($_SESSION['flash_message']); }
 $page_title = "Add New Student - International School Portal";
 $header_title = "Add New Student";
 $body_class = "animated-background"; // For animated background
@@ -15,15 +16,15 @@ include_once __DIR__ . '/../includes/header.php';
 ?>
 
     <div class="container <?php echo $container_class; ?>">
-        <?php if ($session_message): ?>
-            <div class="message <?php echo $session_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
-                <?php echo nl2br(htmlspecialchars($session_message['text'])); ?>
+        <?php if ($flash_message): ?>
+            <div class="message <?php echo $flash_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
+                <?php echo nl2br(htmlspecialchars($flash_message['message'])); ?>
             </div>
         <?php elseif (!empty($_GET['error'])): // Fallback for old error handling ?>
             <div class="message error-message"><?php echo htmlspecialchars($_GET['error']); ?></div>
         <?php endif; ?>
 
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/add_student.php" method="POST">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/add_student.php" method="POST">
             <h2>Personal Information</h2>
             <div class="form-grid">
                 <div class="form-group">
@@ -138,7 +139,7 @@ include_once __DIR__ . '/../includes/header.php';
             </div>
 
             <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Add Student</button>
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/students.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/students.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
         </form>
     </div>
 

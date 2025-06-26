@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
  * @param string $message The message to display.
  */
 function redirect_with_message(string $url, string $type, string $message): void {
-    $_SESSION['message'] = ['type' => $type, 'text' => $message];
+    $_SESSION['flash_message'] = ['type' => $type, 'message' => $message];
     header("Location: " . $url);
     exit();
 }

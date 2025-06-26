@@ -1,9 +1,15 @@
 <?php
-session_start();
+// Use the new bootstrap file for common includes
+require_once __DIR__ . '/../../src/bootstrap.php';
 
 // If user is already logged in, redirect them to the main index page
+// Updated: Redirect to the appropriate dashboard based on role.
 if (isset($_SESSION['user_id'])) {
-    header('Location: /programing/schoo-main/schoo-main/schoo/frontend/public/index.php');
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'student') {
+        header('Location: ' . BASE_PATH . '/frontend/public/student_portal.php');
+    } else {
+        header('Location: ' . BASE_PATH . '/frontend/public/index.php');
+    }
     exit();
 }
 
@@ -13,9 +19,9 @@ $body_class = "animated-background";
 $container_class = "form-container";
 
 // Check for session-based messages from redirects
-$session_message = $_SESSION['message'] ?? null;
-if ($session_message) {
-    unset($_SESSION['message']);
+$flash_message = $_SESSION['flash_message'] ?? null;
+if ($flash_message) {
+    unset($_SESSION['flash_message']);
 }
 ?>
 <!DOCTYPE html>
@@ -24,20 +30,20 @@ if ($session_message) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/programing/schoo-main/schoo-main/schoo/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> <!-- Consider hosting locally -->
+    <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/css/style.css">
 </head>
 <body class="<?php echo $body_class; ?>">
     <div class="container <?php echo $container_class; ?>" style="margin-top: 10vh;">
         <h1 style="text-align: center; color: var(--primary-color, #004080);"><?php echo $header_title; ?></h1>
         
-        <?php if ($session_message): ?>
-            <div class="message <?php echo $session_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
-                <?php echo nl2br(htmlspecialchars($session_message['text'])); ?>
+        <?php if ($flash_message): ?>
+            <div class="message <?php echo $flash_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
+                <?php echo htmlspecialchars($flash_message['message']); ?>
             </div>
         <?php endif; ?>
 
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/login_process.php" method="POST">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/login_process.php" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
@@ -50,8 +56,8 @@ if ($session_message) {
 
             <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-sign-in-alt"></i> Login</button>
         </form>
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/index.php">Back to Home</a>
+        <div style="text-align: center; margin-top: 20px;"> 
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/index.php">Back to Home</a>
         </div>
     </div>
     

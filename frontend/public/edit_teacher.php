@@ -1,43 +1,6 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../backend/config/connection.php';
-
-$teacher_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$teacher = null;
-$error_message = $_GET['error'] ?? '';
-$success_message = $_GET['success'] ?? '';
-
-$page_title = "Edit Teacher - International School Portal";
-$header_title = "Edit Teacher";
-$body_class = "animated-background"; // For animated background
-$container_class = "form-container"; // For form-specific styling
-
-if (!$teacher_id) {
-    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php?error=Invalid teacher ID.");
-    exit();
-}
-
-// Fetch teacher details
-$stmt = $conn->prepare("SELECT t.*, u.username FROM teachers t LEFT JOIN users u ON t.user_id = u.id WHERE t.id = ?");
-if ($stmt) {
-    $stmt->bind_param("i", $teacher_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 1) {
-        $teacher = $result->fetch_assoc();
-    } else {
-        header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php?error=Teacher not found.");
-        exit();
-    }
-    $stmt->close();
-} else {
-    $error_message = "Error preparing statement: " . $conn->error;
-}
-
-if ($teacher === null && empty($error_message)) {
-    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php?error=Could not load teacher data.");
-    exit();
-}
+// This is the view file.
+require_once __DIR__ . '/../../src/pages/edit_teacher.php';
 
 include_once __DIR__ . '/../includes/header.php';
 ?>
@@ -51,7 +14,7 @@ include_once __DIR__ . '/../includes/header.php';
         <?php endif; ?>
 
         <?php if ($teacher): ?>
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/update_teacher.php" method="POST">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/update_teacher.php" method="POST">
             <input type="hidden" name="teacher_id" value="<?php echo htmlspecialchars($teacher['id']); ?>">
 
             <div class="form-group">
@@ -99,7 +62,7 @@ include_once __DIR__ . '/../includes/header.php';
             </div>
 
             <button type="submit" class="btn"><i class="fas fa-save"></i> Update Teacher</button>
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/teachers.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
         </form>
         <?php else: ?>
             <p>Teacher data could not be loaded.</p>

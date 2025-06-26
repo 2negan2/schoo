@@ -1,28 +1,15 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../backend/helpers.php';
-
+// Use the new bootstrap file for common includes
+require_once __DIR__ . '/../../src/bootstrap.php';
 // Authorization Check: Ensure a user is logged in AND is an admin
-if (!isset($_SESSION['user_id'])) {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php',
-        'error',
-        'You must be logged in to access this page.'
-    );
-} elseif ($_SESSION['role'] !== 'admin') {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/index.php',
-        'error',
-        'You do not have permission to access this page.'
-    );
-}
+check_auth_and_role('admin');
 
-// Check for session-based messages from redirects
-$session_message = $_SESSION['message'] ?? null;
-if ($session_message) {
-    unset($_SESSION['message']); // Clear the message after retrieving it
+// This is a simple form page, so no separate logic file is needed.
+$flash_message = $_SESSION['flash_message'] ?? null;
+if ($flash_message) {
+    unset($_SESSION['flash_message']); // Clear the message after retrieving it
 }
-
+ 
 $page_title = "Add New Section - International School Portal";
 $header_title = "Add New Section";
 $body_class = "animated-background";
@@ -32,15 +19,15 @@ include_once __DIR__ . '/../includes/header.php';
 ?>
 
     <div class="container <?php echo $container_class; ?>">
-        <?php if ($session_message): ?>
-            <div class="message <?php echo $session_message['type'] === 'error' ? 'error-message' : 'success-message'; ?>">
+        <?php if ($flash_message): ?>
+            <div class="message <?php echo $flash_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
                 <?php
-                    echo htmlspecialchars($session_message['text']);
+                    echo htmlspecialchars($flash_message['message']);
                 ?>
             </div>
         <?php endif; ?>
 
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/add_section.php" method="POST">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/add_section.php" method="POST">
             <div class="form-group">
                 <label for="name">Section Name:</label>
                 <input type="text" id="name" name="name" placeholder="e.g., Section A" required>
@@ -67,7 +54,7 @@ include_once __DIR__ . '/../includes/header.php';
             </div>
 
             <button type="submit" class="btn"><i class="fas fa-plus"></i> Add Section</button>
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/sections.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/sections.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
         </form>
     </div>
 

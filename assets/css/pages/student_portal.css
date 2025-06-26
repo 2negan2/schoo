@@ -1,0 +1,19 @@
+.portal-container { display: flex; flex-wrap: wrap; gap: 30px; }
+.id-card-container { flex: 1; min-width: 420px; max-width: 450px; }
+.id-card { background: var(--form-bg-color, #fff); border: 1px solid var(--border-color, #d6d9e0); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text-color); }
+.id-card-header { text-align: center; border-bottom: 2px solid var(--primary-color, #007bff); padding-bottom: 10px; margin-bottom: 15px; }
+.id-card-header h3 { margin: 0; color: var(--primary-color-dark, #0056b3); font-size: 1.2em; }
+.id-card-header p { margin: 0; font-size: 0.9em; color: var(--text-muted-color, #6c757d); }
+.id-card-body { display: flex; gap: 20px; align-items: flex-start; }
+.id-card-photo { text-align: center; }
+.id-card-photo .student-photo { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary-color, #007bff); object-fit: cover; background-color: var(--background-color, #e9ecef); }
+.id-card-photo .qr-code { width: 100px; height: 100px; margin-top: 10px; }
+.id-card-details { flex: 1; }
+.id-card-details p { margin: 6px 0; font-size: 14px; line-height: 1.4; }
+.id-card-details p strong { color: var(--text-strong-color, #343a40); min-width: 80px; display: inline-block; }
+.id-card-footer { margin-top: 15px; text-align: center; border-top: 1px solid var(--border-color-light, #eee); padding-top: 10px; font-size: 0.85em; color: var(--text-muted-color, #6c757d); }
+.student-data-container { flex: 2; min-width: 400px; }
+.gpa-tracker { background: var(--info-bg-color, #e9f5ff); border-left: 5px solid var(--primary-color, #007bff); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; }
+.gpa-tracker h3 { margin-top: 0; color: var(--primary-color-dark, #0056b3); }
+.gpa-tracker .gpa-value { font-size: 2.8em; font-weight: bold; color: var(--primary-color-darker, #004085); }
+.data-table h3 { border-bottom: 2px solid var(--border-color-light, #eee); padding-bottom: 5px; }

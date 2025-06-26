@@ -15,17 +15,22 @@
         <div class="header-links">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/index.php"><i class="fas fa-home"></i> Home</a>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/student_portal.php"><i class="fas fa-user-circle"></i> My Portal</a>
+            <?php endif; ?>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/students.php"><i class="fas fa-user-graduate"></i> Students</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/sections.php"><i class="fas fa-sitemap"></i> Sections</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/subjects.php"><i class="fas fa-book"></i> Subjects</a>
+                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/assign_teacher_section.php"><i class="fas fa-chalkboard-teacher"></i> Assign Teachers</a>
+                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/manage_schedule.php"><i class="fas fa-calendar-alt"></i> Manage Schedule</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/users.php"><i class="fas fa-users-cog"></i> Users</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/attendance.php"><i class="fas fa-user-check"></i> Attendance</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/grades.php"><i class="fas fa-book-open"></i> Grades</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/notifications.php"><i class="fas fa-bell"></i> Notifications</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/backend/actions/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
             <?php else: ?>
-                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/index.php"><i class="fas fa-home"></i> Home</a>
+                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php"><i class="fas fa-home"></i> Home</a>
                 <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php"><i class="fas fa-sign-in-alt"></i> Login</a>
             <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle-btn"><i id="theme-icon" class="fas fa-moon"></i></button>

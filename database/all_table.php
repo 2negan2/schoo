@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS students (
     last_score FLOAT NOT NULL,
     last_grade INT NOT NULL,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )");
 
 // TEACHERS
@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS teachers (
     religion VARCHAR(50),
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100),
-    qualification VARCHAR(100)
+    qualification VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )");
 
 // SECTIONS
@@ -103,7 +104,9 @@ CREATE TABLE IF NOT EXISTS class_assignments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL UNIQUE,
     section_id INT NOT NULL,
-    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE
 )");
 
 // TEACHER SECTION ASSIGNMENTS
@@ -112,7 +115,9 @@ CREATE TABLE IF NOT EXISTS teacher_section_assignments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     teacher_id INT NOT NULL,
     section_id INT NOT NULL,
-    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE
 )");
 
 // SUBJECT ASSIGNMENTS
@@ -122,7 +127,10 @@ CREATE TABLE IF NOT EXISTS subject_assignments (
     section_id INT NOT NULL,
     subject_id INT NOT NULL,
     teacher_id INT NOT NULL,
-    year INT NOT NULL
+    year INT NOT NULL,
+    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 )");
 
 // ATTENDANCE
@@ -134,7 +142,10 @@ CREATE TABLE IF NOT EXISTS attendance (
     date DATE NOT NULL,
     status ENUM('present','absent') NOT NULL,
     marked_by INT NOT NULL,
-    marked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    marked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
+    FOREIGN KEY (marked_by) REFERENCES users(id) ON DELETE CASCADE
 )");
 
 // GRADES
@@ -151,7 +162,10 @@ CREATE TABLE IF NOT EXISTS grades (
     total FLOAT,
     final_exam FLOAT,
     updated_by INT NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE CASCADE
 )");
 
 $conn->close();

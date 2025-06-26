@@ -1,75 +1,18 @@
+// Use the new bootstrap file for common includes
 <?php
-session_start(); // Good practice
-require_once __DIR__ . '/../../backend/config/connection.php'; // Path to DB connection
-
-require_once __DIR__ . '/../../backend/helpers.php';
-
-// Authorization Check: Ensure a user is logged in AND is an admin
-if (!isset($_SESSION['user_id'])) {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php',
-        'error',
-        'You must be logged in to access this page.'
-    );
-} elseif ($_SESSION['role'] !== 'admin') {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/index.php',
-        'error',
-        'You do not have permission to access this page. Admin access required.'
-    );
-}
-// Check for session-based messages from redirects
-$session_message = $_SESSION['message'] ?? null;
-if ($session_message) {
-    unset($_SESSION['message']); // Clear the message after retrieving it
-}
-
-// Fetch teachers from the database
-$teachers = [];
-$sql = "SELECT
-            t.id,
-            t.full_name,
-            u.username,
-            t.date_of_birth,
-            t.gender,
-            t.phone,
-            t.email,
-            t.qualification
-        FROM
-            teachers t
-        LEFT JOIN
-            users u ON t.user_id = u.id
-        ORDER BY
-            t.id ASC";
-
-
-$page_title = "Teacher Management - International School Portal";
-$header_title = "Teacher Management";
-
-$result = $conn->query($sql);
-$error_message = '';
-
-if ($result === false) {
-    // Query failed
-    $error_message = "Error fetching teacher data: " . htmlspecialchars($conn->error);
-} elseif ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $teachers[] = $row;
-    }
-}
-// $conn will be closed by connection.php or can be closed manually if needed.
+// This is the view file.
+require_once __DIR__ . '/../../src/pages/teachers.php';
 
 include_once __DIR__ . '/../includes/header.php';
 ?>
-
     <div class="container">
         <div class="action-bar">
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/add_teacher.php" class="btn"><i class="fas fa-user-plus"></i> Add New Teacher</a>
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/add_teacher.php" class="btn"><i class="fas fa-user-plus"></i> Add New Teacher</a>
         </div>
 
-        <?php if ($session_message): ?>
-            <div class="message <?php echo $session_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
-                <?php echo nl2br(htmlspecialchars($session_message['text'])); // Use nl2br to respect line breaks ?>
+        <?php if ($flash_message): ?>
+            <div class="message <?php echo $flash_message['type'] === 'success' ? 'success-message' : 'error-message'; ?>">
+                <?php echo nl2br(htmlspecialchars($flash_message['message'])); // Use nl2br to respect line breaks ?>
             </div>
         <?php endif; ?>
 
@@ -104,8 +47,8 @@ include_once __DIR__ . '/../includes/header.php';
                             <td><?php echo htmlspecialchars($teacher['email'] ?? 'N/A'); ?></td>
                             <td><?php echo htmlspecialchars($teacher['qualification'] ?? 'N/A'); ?></td>
                             <td>
-                                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/edit_teacher.php?id=<?php echo htmlspecialchars($teacher['id']); ?>" class="btn btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="/programing/schoo-main/schoo-main/schoo/backend/actions/delete_teacher.php?id=<?php echo htmlspecialchars($teacher['id']); ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this teacher? This action cannot be undone.');"><i class="fas fa-trash-alt"></i> Delete</a>
+                                <a href="<?php echo BASE_PATH; ?>/frontend/public/edit_teacher.php?id=<?php echo htmlspecialchars($teacher['id']); ?>" class="btn btn-sm btn-edit"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="<?php echo BASE_PATH; ?>/backend/actions/delete_teacher.php?id=<?php echo htmlspecialchars($teacher['id']); ?>" class="btn btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete this teacher? This action cannot be undone.');"><i class="fas fa-trash-alt"></i> Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

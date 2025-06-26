@@ -1,44 +1,7 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../backend/config/connection.php';
-
-$student_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$student = null;
-$error_message = $_GET['error'] ?? '';
-$success_message = $_GET['success'] ?? '';
-
-$page_title = "Edit Student - International School Portal";
-$header_title = "Edit Student";
-$body_class = "animated-background"; // For animated background
-$container_class = "form-container"; // For form-specific styling
-
-if (!$student_id) {
-    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/students.php?error=Invalid student ID.");
-    exit();
-}
-
-// Fetch student details
-$stmt = $conn->prepare("SELECT s.*, u.username FROM students s LEFT JOIN users u ON s.user_id = u.id WHERE s.id = ?");
-if ($stmt) {
-    $stmt->bind_param("i", $student_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 1) {
-        $student = $result->fetch_assoc();
-    } else {
-        header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/students.php?error=Student not found.");
-        exit();
-    }
-    $stmt->close();
-} else {
-    $error_message = "Error preparing statement: " . $conn->error;
-}
-
-if ($student === null && empty($error_message)) {
-    // Fallback if student somehow wasn't loaded and no DB error was caught
-    header("Location: /programing/schoo-main/schoo-main/schoo/frontend/public/students.php?error=Could not load student data.");
-    exit();
-}
+// This is the view file for the edit student page.
+// It includes the logic file to prepare data, then renders the HTML form.
+require_once __DIR__ . '/../../src/pages/edit_student.php';
 
 include_once __DIR__ . '/../includes/header.php';
 ?>
@@ -52,7 +15,7 @@ include_once __DIR__ . '/../includes/header.php';
         <?php endif; ?>
 
         <?php if ($student): ?>
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/update_student.php" method="POST">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/update_student.php" method="POST">
             <input type="hidden" name="student_id" value="<?php echo htmlspecialchars($student['id']); ?>">
 
             <div class="form-group">
@@ -168,7 +131,7 @@ include_once __DIR__ . '/../includes/header.php';
             </div>
 
             <button type="submit" class="btn"><i class="fas fa-save"></i> Update Student</button>
-            <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/students.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            <a href="<?php echo BASE_PATH; ?>/frontend/public/students.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
         </form>
         <?php else: ?>
             <p>Student data could not be loaded.</p>

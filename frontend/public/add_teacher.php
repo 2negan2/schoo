@@ -1,32 +1,21 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../backend/helpers.php';
+// Use the new bootstrap file for common includes
+require_once __DIR__ . '/../../src/bootstrap.php';
 
 // Authorization Check: Ensure a user is logged in
-if (!isset($_SESSION['user_id'])) {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php',
-        'error',
-        'You must be logged in to access this page.'
-    );
-} elseif ($_SESSION['role'] !== 'admin') {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/index.php',
-        'error',
-        'You do not have permission to access this page. Admin access required.'
-    );
-}
+check_auth_and_role('admin');
 
+// This is a simple form page, so no separate logic file is needed.
 $page_title = "Add New Teacher - International School Portal";
 $header_title = "Add New Teacher";
 $body_class = "animated-background"; // For animated background
 $container_class = "form-container"; // For form-specific styling
 
-// Check for session-based messages from redirects
-$session_message = $_SESSION['message'] ?? null;
-if ($session_message) {
-    unset($_SESSION['message']); // Clear the message after retrieving it
+$flash_message = $_SESSION['flash_message'] ?? null;
+if ($flash_message) {
+    unset($_SESSION['flash_message']); // Clear the message after retrieving it
 }
+ 
 
 include_once __DIR__ . '/../includes/header.php';
 ?>
@@ -41,7 +30,7 @@ include_once __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <form action="/programing/schoo-main/schoo-main/schoo/backend/actions/add_teacher.php" method="POST" class="form-grid-container">
+        <form action="<?php echo BASE_PATH; ?>/backend/actions/add_teacher.php" method="POST" class="form-grid-container">
             <div class="form-group">
                 <label for="full_name">Full Name:</label>
                 <input type="text" id="full_name" name="full_name" required>
@@ -83,7 +72,7 @@ include_once __DIR__ . '/../includes/header.php';
 
             <div class="form-actions">
                 <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Add Teacher</button>
-                <a href="/programing/schoo-main/schoo-main/schoo/frontend/public/teachers.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+                <a href="<?php echo BASE_PATH; ?>/frontend/public/teachers.php" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
             </div>
         </form>
     </div>

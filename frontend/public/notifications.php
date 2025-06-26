@@ -1,50 +1,6 @@
 <?php
-session_start(); // Good practice
-require_once __DIR__ . '/../../backend/config/connection.php'; // Path to DB connection
-
-require_once __DIR__ . '/../../backend/helpers.php';
-
-// Authorization Check: Ensure a user is logged in
-if (!isset($_SESSION['user_id'])) {
-    redirect_with_message(
-        '/programing/schoo-main/schoo-main/schoo/frontend/public/auth/login.php',
-        'error',
-        'You must be logged in to access this page.'
-    );
-}
-
-// NOTE: In a real application, you would also filter this by the logged-in user's ID.
-// For now, we fetch all to demonstrate the table structure.
-$notifications = [];
-$sql = "SELECT
-            n.id,
-            n.type,
-            n.message,
-            n.link,
-            n.is_read,
-            n.created_at,
-            u.username AS user_username -- Username of the user receiving the notification
-        FROM
-            notifications n
-        LEFT JOIN
-            users u ON n.user_id = u.id
-        ORDER BY
-            n.created_at DESC, n.id DESC"; // Order by newest first
-
-$result = $conn->query($sql);
-$error_message = '';
-
-if ($result === false) {
-    // Query failed
-    $error_message = "Error fetching notification data: " . htmlspecialchars($conn->error);
-} elseif ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $notifications[] = $row;
-    }
-}
-
-$page_title = "Notifications - International School Portal";
-$header_title = "Notifications";
+// This is the view file.
+require_once __DIR__ . '/../../src/pages/notifications.php';
 
 include_once __DIR__ . '/../includes/header.php';
 ?>
